@@ -3,7 +3,7 @@ import ContentLayout from '../components/Layout/ContentLayout';
 import Sider from '../components/Sider';
 import Footer from '../components/Footer';
 
-export default function User() {
+export default function Users() {
   return (
     <div className='flex w-full'>
       <Sider />

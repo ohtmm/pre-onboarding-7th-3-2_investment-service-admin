@@ -24,12 +24,12 @@ export default function Sider() {
         <a className='flex items-center w-full h-16 pl-8 hover:bg-myBlue hover:text-white'>
           <AiOutlineDashboard className='mr-3' /> 대시 보드
         </a>
-        <Link href='/account-list'>
+        <Link href='/accounts'>
           <a className='flex items-center w-full h-16 pl-8 hover:bg-myBlue hover:text-white'>
             <VscGraphLine className='mr-3' /> 투자 계좌
           </a>
         </Link>
-        <Link href='/user'>
+        <Link href='/users'>
           <a className='flex items-center w-full h-16 pl-8 hover:bg-myBlue hover:text-white'>
             <AiOutlineUser className='mr-3' /> 사용자
           </a>

@@ -2,8 +2,10 @@ import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import ContentLayout from '../../components/Layout/ContentLayout';
 import Sider from '../../components/Sider';
+import useGetData from '../../src/lib/hooks/useGetData';
 
-export default function AcoountList() {
+export default function Accounts() {
+  const { db } = useGetData('users');
   return (
     <div className='flex w-full'>
       <Sider />
