@@ -1,10 +1,12 @@
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
-import ContentLayout from '../../components/Layout/ContentLayout';
-import Sider from '../../components/Sider';
 import fetchData from '../../src/lib/api/api';
 import useGetAccounts, { MAX_PAGE } from '../../src/lib/hooks/useGetAccounts';
+
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
+import Sider from '../../components/Sider';
+import ContentLayout from '../../components/Layout/ContentLayout';
+
 import formatDate from '../../src/lib/utils/formatDate';
 import formatBroker from '../../src/lib/utils/formatBroker';
 import formatAccountStatus from '../../src/lib/utils/formatAccountStatus';
