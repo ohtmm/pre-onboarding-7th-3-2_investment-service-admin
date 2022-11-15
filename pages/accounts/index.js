@@ -4,20 +4,45 @@ import Header from '../../components/Header';
 import ContentLayout from '../../components/Layout/ContentLayout';
 import Sider from '../../components/Sider';
 import fetchData from '../../src/lib/api/api';
-import useGetAccounts from '../../src/lib/hooks/useGetAccounts';
+import useGetAccounts, { MAX_PAGE } from '../../src/lib/hooks/useGetAccounts';
 import formatDate from '../../src/lib/utils/formatDate';
 import formatBroker from '../../src/lib/utils/formatBroker';
 import formatAccountStatus from '../../src/lib/utils/formatAccountStatus';
+import formatMoney from '../../src/lib/utils/formatMoney';
 
 export default function Accounts(props) {
-  const { data: accounts } = useGetAccounts(2);
+  const { accountsPerPage: accounts, setPageNum, pageNum } = useGetAccounts();
 
+  const handleNextBtn = () => {
+    if (pageNum === MAX_PAGE) {
+      return;
+    }
+    setPageNum((prev) => prev + 1);
+  };
+  const handlePrevBtn = () => {
+    if (pageNum === 1) {
+      return;
+    }
+    setPageNum((prev) => prev - 1);
+  };
   return (
     <div className='flex w-full'>
       <Sider />
       <div className='flex flex-1 items-stretch flex-wrap bg-myGray relative '>
         <Header title='투자계좌' />
         <ContentLayout>
+          <button
+            className='block w-8 h-8 absolute top-0 right-20 border-1 bg-myBlue text-white rounded-md'
+            onClick={handlePrevBtn}
+          >
+            &lt;
+          </button>
+          <button
+            className='block w-8 h-8 absolute top-0 right-10 border-1 bg-myBlue text-white rounded-md'
+            onClick={handleNextBtn}
+          >
+            &gt;
+          </button>
           <table className='bg-white font-normal text-sm'>
             <thead className='bg-myBeige'>
               <tr>
@@ -28,22 +53,22 @@ export default function Accounts(props) {
                 <th>계좌명</th>
                 <th>평가금액</th>
                 <th>입금금액</th>
-                <th>계좌활성화여부</th>
+                <th>계좌활성화</th>
                 <th>계좌개설일</th>
               </tr>
             </thead>
             <tbody>
-              {accounts.map((account) => {
+              {accounts?.map((account) => {
                 return (
-                  // TODO: 고객명, 계좌번호, 평가금액(입금금액) 가공, 컴포넌트 분리
+                  // TODO: 고객명, 계좌번호, 컴포넌트 분리
                   <tr key={account.uuid}>
                     <td>{account.user_id}</td>
                     <td>{formatBroker(account.broker_id)}</td>
                     <td>{account.number}</td>
                     <td>{formatAccountStatus(account.status)}</td>
                     <td>{account.name}</td>
-                    <td>{account.assets}</td>
-                    <td>{account.payments}</td>
+                    <td>{formatMoney(account.assets)}</td>
+                    <td>{formatMoney(account.payments)}</td>
                     <td>{account.is_active ? 'yes' : 'no'}</td>
                     <td>{formatDate(account.created_at)}</td>
                   </tr>
@@ -60,7 +85,7 @@ export default function Accounts(props) {
             border-collapse: collapse;
             border: 1px solid #f0f0f0;
             width: 95%;
-            margin: 2rem auto;
+            margin: 2.5rem auto;
           }
           th{
               border-collapse: collapse;
@@ -88,7 +113,7 @@ export async function getServerSideProps(context) {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery(
-    ['db', 'accounts'],
+    ['accounts', 1],
     async () => await fetchData('accounts', 1)
   );
 

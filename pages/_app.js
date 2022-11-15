@@ -11,7 +11,6 @@ import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());
-  // const [queryClient] = useState(() => {new QueryClient();});
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>

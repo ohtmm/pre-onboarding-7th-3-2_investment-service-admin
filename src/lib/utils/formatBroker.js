@@ -1,4 +1,4 @@
-const brokersName = {
+let BROKER_NAME = {
   209: '유안타증권',
   218: '현대증권',
   230: '미래에셋증권',
@@ -27,5 +27,5 @@ const brokersName = {
 };
 
 export default function formatBroker(brokerId) {
-  return brokersName[`${brokerId}`];
+  return BROKER_NAME[`${brokerId}`];
 }
