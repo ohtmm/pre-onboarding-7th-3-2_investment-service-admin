@@ -1,45 +1,54 @@
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import ContentLayout from '../../components/Layout/ContentLayout';
 import Sider from '../../components/Sider';
-import useGetData from '../../src/lib/hooks/useGetData';
+import fetchData from '../../src/lib/api/api';
+import useGetAccounts from '../../src/lib/hooks/useGetAccounts';
+import formatDate from '../../src/lib/utils/formatDate';
+import formatBroker from '../../src/lib/utils/formatBroker';
+import formatAccountStatus from '../../src/lib/utils/formatAccountStatus';
 
-export default function Accounts() {
-  const { db } = useGetData('users');
+export default function Accounts(props) {
+  const { data: accounts } = useGetAccounts(2);
+
   return (
     <div className='flex w-full'>
       <Sider />
-      <div className='flex flex-1 items-stretch flex-wrap bg-myGray'>
+      <div className='flex flex-1 items-stretch flex-wrap bg-myGray relative '>
         <Header title='투자계좌' />
         <ContentLayout>
-          <table className='bg-white font-normal'>
+          <table className='bg-white font-normal text-sm'>
             <thead className='bg-myBeige'>
               <tr>
-                <th>증권사</th>
-                <th>계좌번호</th>
                 <th>고객명</th>
-                <th>운용상태</th>
-                <th>계약원금</th>
-                <th>예수금</th>
-                <th>총자산</th>
-                <th>평가손익</th>
-                <th>수익률</th>
-                <th>상품명</th>
+                <th>브로커명</th>
+                <th>계좌번호</th>
+                <th>계좌상태</th>
+                <th>계좌명</th>
+                <th>평가금액</th>
+                <th>입금금액</th>
+                <th>계좌활성화여부</th>
+                <th>계좌개설일</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>100</td>
-                <td>200</td>
-                <td>300</td>
-                <td>400</td>
-                <td>500</td>
-                <td>60000000000</td>
-                <td>700</td>
-                <td>800</td>
-                <td>900</td>
-                <td>1000</td>
-              </tr>
+              {accounts.map((account) => {
+                return (
+                  // TODO: 고객명, 계좌번호, 평가금액(입금금액) 가공, 컴포넌트 분리
+                  <tr key={account.uuid}>
+                    <td>{account.user_id}</td>
+                    <td>{formatBroker(account.broker_id)}</td>
+                    <td>{account.number}</td>
+                    <td>{formatAccountStatus(account.status)}</td>
+                    <td>{account.name}</td>
+                    <td>{account.assets}</td>
+                    <td>{account.payments}</td>
+                    <td>{account.is_active ? 'yes' : 'no'}</td>
+                    <td>{formatDate(account.created_at)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </ContentLayout>
@@ -73,4 +82,19 @@ export default function Accounts() {
       </style>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(
+    ['db', 'accounts'],
+    async () => await fetchData('accounts', 1)
+  );
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
 }
